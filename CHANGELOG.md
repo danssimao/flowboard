@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/danssimao/flowboard/compare/v1.2.0...v1.2.1) (2026-07-09)
+
+
+### Bug Fixes
+
+* add coverage directory to gitignore ([ce55432](https://github.com/danssimao/flowboard/commit/ce55432e7ef550d78db762935cc66fd1fc37f258))
+
 # [1.2.0](https://github.com/danssimao/flowboard/compare/v1.1.0...v1.2.0) (2026-07-09)
 
 
