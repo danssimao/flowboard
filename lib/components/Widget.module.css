@@ -1,0 +1,38 @@
+.container {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  font-family: system-ui, sans-serif;
+}
+
+.title {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+.button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #888;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: #f0f0f0;
+}
+
+.dark {
+  background: #1a1a1a;
+  color: #e0e0e0;
+  border-color: #444;
+}
+
+.dark .button {
+  border-color: #888;
+  color: #e0e0e0;
+}
+
+.dark .button:hover {
+  background: #333;
+}
