@@ -6,7 +6,7 @@ import dts from 'vite-plugin-dts'
 export default defineConfig({
   plugins: [
     react(),
-    dts({ include: ['lib'], rollupTypes: true, tsconfigPath: resolve(__dirname, 'tsconfig.app.json') }),
+    dts({ include: ['lib'], exclude: ['lib/**/*.test.*', 'lib/test/**'], rollupTypes: true, tsconfigPath: resolve(__dirname, 'tsconfig.app.json') }),
   ],
   build: {
     copyPublicDir: false,

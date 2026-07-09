@@ -17,5 +17,6 @@
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["lib", "src"]
+  "include": ["lib", "src"],
+  "exclude": ["lib/**/*.test.*", "lib/test"]
 }
