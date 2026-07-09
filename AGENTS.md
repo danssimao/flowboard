@@ -33,8 +33,18 @@ Examples: `feat/add-widget`, `fix/button-color`, `chore/update-deps`
 1. Create a feature branch from `main` following the naming pattern above
 2. Make commits following conventional commits
 3. Push the branch and open a Pull Request to `main`
-4. Squash merge the PR into `main`
-5. Semantic-release automatically creates a git tag and GitHub Release
+4. **WAIT for user confirmation before merging**
+5. Squash merge the PR into `main`
+6. Semantic-release automatically creates a git tag and GitHub Release
+
+## ⚠️ Critical Rules
+
+1. **NEVER merge a PR without asking the user first**
+2. Always wait for explicit confirmation before:
+   - Merging a PR
+   - Force pushing
+   - Deleting branches
+   - Making breaking changes
 
 ## Versioning
 
