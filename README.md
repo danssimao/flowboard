@@ -4,7 +4,7 @@ React widget library for embedding interactive Flowboard dashboards.
 
 ## CI/CD
 
-This project uses GitHub Actions for continuous integration.
+This project uses GitHub Actions for continuous integration and delivery.
 
 ## Installation
 
