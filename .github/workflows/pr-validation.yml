@@ -1,0 +1,50 @@
+name: PR Validation
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate-branch-name:
+    name: Validate branch name
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name
+        run: |
+          branch="${{ github.head_ref }}"
+          if ! echo "$branch" | grep -qE '^(feat|fix|build|chore|ci|docs|perf|refactor|style|test)\/[a-z0-9._-]+$'; then
+            echo "::error::Branch name '$branch' does not follow the pattern tipo/descricao"
+            echo "Allowed types: feat|fix|build|chore|ci|docs|perf|refactor|style|test"
+            exit 1
+          fi
+          echo "Branch name '$branch' is valid."
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --legacy-peer-deps
+      - run: npm run lint
+
+  build:
+    name: Build
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --legacy-peer-deps
+      - run: npm run build
