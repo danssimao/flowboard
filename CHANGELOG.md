@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/danssimao/flowboard/compare/v1.1.0...v1.2.0) (2026-07-09)
+
+
+### Features
+
+* configure vitest with testing-library and coverage ([02aa889](https://github.com/danssimao/flowboard/commit/02aa889173336c209f72e7fcd5c8487809a81a42))
+
 # [1.1.0](https://github.com/danssimao/flowboard/compare/v1.0.0...v1.1.0) (2026-07-09)
 
 
