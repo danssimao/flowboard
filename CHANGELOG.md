@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/danssimao/flowboard/compare/v1.0.0...v1.1.0) (2026-07-09)
+
+
+### Features
+
+* rename project from flowboard-widget to flowboard ([906721a](https://github.com/danssimao/flowboard/commit/906721a7684243cde618dca6f35792d6a8d9a898))
+
 # 1.0.0 (2026-07-09)
 
 
