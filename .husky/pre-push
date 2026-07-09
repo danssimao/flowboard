@@ -1,5 +1,12 @@
 [ -n "$CI" ] && exit 0
 
+# Skip validation when deleting remote branches (zero SHA indicates delete)
+while read local_ref local_sha remote_ref remote_sha; do
+  if [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
+    exit 0
+  fi
+done
+
 branch="$(git symbolic-ref HEAD 2>/dev/null | sed 's|refs/heads/||')"
 if ! echo "$branch" | grep -qE '^(feat|fix|build|chore|ci|docs|perf|refactor|style|test)\/[a-z0-9._-]+$'; then
   echo "ERROR: Branch name '$branch' does not follow the pattern tipo/descricao"
