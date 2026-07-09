@@ -2,6 +2,10 @@
   "name": "flowboard-widget",
   "version": "0.1.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danssimao/flowboard.git"
+  },
   "type": "module",
   "main": "./dist/main.es.js",
   "module": "./dist/main.es.js",
