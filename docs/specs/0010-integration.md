@@ -6,13 +6,18 @@ Montar o componente Flowboard root que integra todos os componentes,
 atualizar as exportações públicas, remover o Widget antigo, e criar
 uma demo no playground.
 
+> **Render Engine:** O componente Flowboard suporta motores de renderização
+> extensíveis via prop `edgeEngine`. Veja `0011-render-engines.md` para
+> mais detalhes.
+
 > **Compound Pattern:** O componente Flowboard root suporta dois modos:
 > 1. **Modo Simples** — usa props para definir nodes/edges (backward compatible)
 > 2. **Modo Compound** — usa sub-componentes para customização avançada
 
 ## Dependências
 
-- Todas as fases anteriores (0001–0009)
+- Todas as fases anteriores (0001–0010)
+- 0011 (Render Engines)
 
 ## Arquivos a Criar/Modificar
 
@@ -497,6 +502,11 @@ export { FlowboardMenu } from './components/Flowboard/Flowboard.Menu'
 export { FlowboardFooter } from './components/Flowboard/Flowboard.Footer'
 export { FlowboardTarget } from './components/Flowboard/Flowboard.Target'
 
+// Render Engines
+export { HtmlCssEdgeEngine } from './engines/html-css'
+export { SvgEdgeEngine } from './engines/svg'
+export { CanvasEdgeEngine } from './engines/canvas'
+
 // Hooks
 export { useFlowboard } from './hooks/useFlowboard'
 export { useFlowboardActions } from './hooks/useFlowboardActions'
@@ -513,6 +523,8 @@ export type {
   FlowboardFooterProps,
   FlowboardTargetProps,
   MenuDragProps,
+  EdgeRenderEngine,
+  EdgeRenderEngineProps,
   Node,
   Edge,
   EdgeEndpoint,

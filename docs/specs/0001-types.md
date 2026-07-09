@@ -163,6 +163,66 @@ export interface EdgeRenderProps<TData = Record<string, unknown>> {
 
 ---
 
+## Render Engine (Extensibilidade de Renderização)
+
+### EdgeRenderEngineProps
+
+```typescript
+export interface EdgeRenderEngineProps<TData = Record<string, unknown>> {
+  edge: Edge<TData>
+  sourcePosition: Position
+  targetPosition: Position
+  selected: boolean
+  zoom: number
+  theme: FlowboardTheme
+}
+```
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `edge` | `Edge<T>` | Dados completos da aresta |
+| `sourcePosition` | `Position` | Posição absoluta do port de origem |
+| `targetPosition` | `Position` | Posição absoluta do port de destino |
+| `selected` | `boolean` | Se a aresta está selecionada |
+| `zoom` | `number` | Nível de zoom atual |
+| `theme` | `FlowboardTheme` | Tema aplicado |
+
+### EdgeRenderEngine (Interface)
+
+```typescript
+export interface EdgeRenderEngine<TData = Record<string, unknown>> {
+  /**
+   * Identificador único do engine
+   */
+  readonly id: string
+
+  /**
+   * Nome descritivo do engine
+   */
+  readonly name: string
+
+  /**
+   * Renderiza uma edge específica
+   */
+  renderEdge(props: EdgeRenderEngineProps<TData>): React.ReactNode
+
+  /**
+   * Renderiza o container para todas as edges (opcional)
+   * Útil para SVG (precisa de um elemento <svg>) ou Canvas
+   */
+  renderContainer?(children: React.ReactNode): React.ReactNode
+}
+```
+
+| Campo | Tipo | Obrigatório | Descrição |
+|-------|------|-------------|-----------|
+| `id` | `string` | Sim | Identificador único (ex: 'html-css', 'svg', 'canvas') |
+| `name` | `string` | Sim | Nome descritivo do engine |
+| `renderEdge` | `(props) => ReactNode` | Sim | Renderiza uma edge |
+| `renderContainer` | `(children) => ReactNode` | Não | Container para todas as edges |
+
+---
+
 ## Props do Componente Flowboard
 
 ```typescript
@@ -173,6 +233,7 @@ export interface FlowboardProps<TNode = Record<string, unknown>, TEdge = Record<
   onEdgesChange: (edges: Edge<TEdge>[]) => void
   nodeTypes: Record<string, React.ComponentType<NodeRenderProps<TNode>>>
   edgeTypes?: Record<string, React.ComponentType<EdgeRenderProps<TEdge>>>
+  edgeEngine?: EdgeRenderEngine<TEdge>
   theme?: FlowboardTheme
   minZoom?: number
   maxZoom?: number
@@ -191,6 +252,7 @@ export interface FlowboardProps<TNode = Record<string, unknown>, TEdge = Record<
 | `onEdgesChange` | `(edges: Edge<TEdge>[]) => void`        | Sim         | —       | Callback chamado quando arestas são alteradas           |
 | `nodeTypes`     | `Record<string, ComponentType<...>>`    | Sim         | —       | Mapa de tipo→componente para renderizar nodes           |
 | `edgeTypes`     | `Record<string, ComponentType<...>>`    | Não         | `{}`    | Mapa de tipo→componente para renderizar arestas         |
+| `edgeEngine`    | `EdgeRenderEngine<TEdge>`               | Não         | `HtmlCssEdgeEngine` | Motor de renderização de edges                |
 | `theme`         | `FlowboardTheme`                        | Não         | light   | Tema visual                                             |
 | `minZoom`       | `number`                                | Não         | `0.1`   | Zoom mínimo permitido                                   |
 | `maxZoom`       | `number`                                | Não         | `3`     | Zoom máximo permitido                                   |
