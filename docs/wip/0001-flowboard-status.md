@@ -1,7 +1,7 @@
 # Flowboard — Status do Desenvolvimento
 
 > **Última atualização:** 2026-07-09
-> **Status:** Specs completas com Compound Pattern, implementação não iniciada
+> **Status:** Specs completas com Compound Pattern e Render Engines, implementação não iniciada
 > **Próximo passo:** Implementar Fase 0001 (Types)
 
 ---
@@ -51,6 +51,7 @@ customizável em aplicações React — quadros Kanban, diagramas, fluxogramas, 
 | 17 | Trackpad | Suporte completo: two-finger scroll → pan, pinch → zoom |
 | 18 | **Compound Pattern** | **API híbrida: modo simples (props) + modo compound (sub-componentes)** |
 | 19 | **Menu Customizável** | **Customização completa via render props + hook useMenuDrag** |
+| 20 | **Render Engine** | **Motor de renderização extensível para edges (HTML+CSS padrão, SVG, Canvas)** |
 
 ### Componentes (Compound Pattern)
 
@@ -69,11 +70,11 @@ Flowboard (root - Context Provider)
 
 ## Specs Criadas
 
-Todas as 10 specs estão em `docs/specs/`:
+Todas as 11 specs estão em `docs/specs/`:
 
 | Spec | Arquivo | Conteúdo | Status |
 |------|---------|----------|--------|
-| 0001 | `0001-types.md` | Tipos base, Node, Edge, Props, State, Actions | ✅ Completa |
+| 0001 | `0001-types.md` | Tipos base, Node, Edge, Props, State, Actions, EdgeRenderEngine | ✅ Completa |
 | 0002 | `0002-theme.md` | FlowboardTheme, defaultTheme, mergeTheme, CSS vars | ✅ Completa |
 | 0003 | `0003-utils.md` | UUID, geometria (getPortPosition, calcLineAngle, etc.) | ✅ Completa |
 | 0004 | `0004-context-and-state.md` | Context, reducer, useFlowboard, sync | ✅ Completa |
@@ -83,8 +84,9 @@ Todas as 10 specs estão em `docs/specs/`:
 | 0008 | `0008-node-and-port.md` | Node drag, 4 ports, useDragNode | ✅ Completa |
 | 0009 | `0009-edge-and-target.md` | Edge linha reta, useDragEdge, Target cursor | ✅ Completa |
 | 0010 | `0010-integration.md` | Flowboard root, exports, cleanup, demo, critérios de aceite | ✅ Completa |
+| 0011 | `0011-render-engines.md` | EdgeRenderEngine, HTML+CSS, SVG, Canvas engines | ✅ Completa |
 
-**Total:** ~106 KB de especificação detalhada com tipos, implementação, CSS, e testes.
+**Total:** ~115 KB de especificação detalhada com tipos, implementação, CSS, e testes.
 
 ---
 
@@ -92,12 +94,13 @@ Todas as 10 specs estão em `docs/specs/`:
 
 ### O que foi feito
 
-1. ✅ Levantamento de requisitos com o usuário (todas as 19 decisões acima)
-2. ✅ Criação de 10 specs detalhadas em `docs/specs/`
+1. ✅ Levantamento de requisitos com o usuário (todas as 20 decisões acima)
+2. ✅ Criação de 11 specs detalhadas em `docs/specs/`
 3. ✅ Atualização das specs 0005 e 0006 para suporte a trackpad
 4. ✅ **Implementação do Compound Pattern nas specs (API híbrida)**
 5. ✅ **Implementação do Menu Customizável com render props + hook useMenuDrag**
-6. ✅ Criação deste documento WIP
+6. ✅ **Implementação do Render Engine para edges (HTML+CSS, SVG, Canvas)**
+7. ✅ Criação deste documento WIP
 
 ### O que NÃO foi feito
 
@@ -105,13 +108,14 @@ Todas as 10 specs estão em `docs/specs/`:
 - ❌ O Widget antigo ainda existe e precisa ser removido
 - ❌ Nenhum teste foi escrito
 - ❌ Nenhum componente foi criado
+- ❌ Nenhum render engine foi implementado
 
 ### Próximo passo
 
 **Implementar Fase 0001 — Types** (`lib/types/index.ts`)
 
 Seguir a ordem das specs:
-1. `0001-types.md` → Tipos (inclui tipos compound)
+1. `0001-types.md` → Tipos (inclui tipos compound + EdgeRenderEngine)
 2. `0002-theme.md` → Tema
 3. `0003-utils.md` → Utilitários
 4. `0004-context-and-state.md` → Context + Reducer
@@ -120,7 +124,8 @@ Seguir a ordem das specs:
 7. `0007-menu.md` → Menu (Flowboard.Menu)
 8. `0008-node-and-port.md` → Node (Flowboard.Node) + Port
 9. `0009-edge-and-target.md` → Edge (Flowboard.Edge) + Target
-10. `0010-integration.md` → Compound Root + Integração + Limpeza
+10. `0011-render-engines.md` → Render Engines (HTML+CSS, SVG, Canvas)
+11. `0010-integration.md` → Compound Root + Integração + Limpeza
 
 ---
 
@@ -135,6 +140,10 @@ flowboard/
 │   ├── types/index.ts      # Tipos (ATUALIZAR: substituir WidgetTheme por tipos do Flowboard)
 │   ├── components/         # Componentes React
 │   │   └── Widget/         # ⚠️ REMOVER (substituir por Flowboard/)
+│   ├── engines/            # Render engines para edges
+│   │   ├── html-css/       # Motor padrão (HTML+CSS)
+│   │   ├── svg/            # Motor SVG
+│   │   └── canvas/         # Motor Canvas
 │   ├── hooks/              # Hooks customizados
 │   │   ├── useWidget.ts    # ⚠️ REMOVER (substituir por useFlowboard.ts)
 │   │   └── useMenuDrag.ts  # NOVO: hook para drag and drop do menu
@@ -143,7 +152,7 @@ flowboard/
 │   ├── App.tsx             # ⚠️ ATUALIZAR: demo do Flowboard
 │   └── main.tsx            # Entry point do dev server
 ├── docs/
-│   ├── specs/              # 10 specs detalhadas
+│   ├── specs/              # 11 specs detalhadas
 │   └── wip/                # Este documento
 └── package.json            # Dependências e scripts
 ```
@@ -281,8 +290,9 @@ function App() {
 
 ## Referências
 
-- Specs: `docs/specs/0001-types.md` até `docs/specs/0010-integration.md`
+- Specs: `docs/specs/0001-types.md` até `docs/specs/0011-render-engines.md`
 - **Novo:** `docs/specs/0007-menu.md` — Menu customizável com hook useMenuDrag
+- **Novo:** `docs/specs/0011-render-engines.md` — Render Engine para edges
 - Convenções: `AGENTS.md`
 - Package: `package.json`
 - CI/CD: `.github/workflows/pr-validation.yml`, `.github/workflows/release.yml`

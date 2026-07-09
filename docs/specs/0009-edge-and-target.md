@@ -6,6 +6,10 @@ Edges são linhas retas que conectam dois ports de nodes diferentes.
 O Target é um elemento que segue o cursor durante operações de drag
 (menu→stage, criação de edge, desconexão de edge).
 
+> **Render Engine:** O motor de renderização de edges é extensível via
+> `EdgeRenderEngine`. O padrão é HTML+CSS, mas podem ser usados SVG ou Canvas.
+> Veja `0011-render-engines.md` para mais detalhes.
+
 > **Compound Pattern:** No modo compound, estes componentes são expostos como
 > `Flowboard.Edge` e `Flowboard.Target`. No modo simples, são renderizados
 > internamente pelo `Flowboard` root.
