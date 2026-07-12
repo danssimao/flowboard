@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/danssimao/flowboard/compare/v1.2.1...v1.3.0) (2026-07-12)
+
+
+### Features
+
+* replace Widget with Flowboard component structure and add Prettier ([#20](https://github.com/danssimao/flowboard/issues/20)) ([a8d2043](https://github.com/danssimao/flowboard/commit/a8d20433cd24ba630c969bc9e535edce3d6b000a))
+
 ## [1.2.1](https://github.com/danssimao/flowboard/compare/v1.2.0...v1.2.1) (2026-07-09)
 
 ### Bug Fixes
