@@ -28,13 +28,13 @@ para ambientes que não suportam (ex: testes com jsdom antigo).
 ```typescript
 export function generateId(): string {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-    return crypto.randomUUID()
+    return crypto.randomUUID();
   }
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0
-    const v = c === 'x' ? r : (r & 0x3) | 0x8
-    return v.toString(16)
-  })
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 }
 ```
 
@@ -57,20 +57,20 @@ e no portId.
 export function getPortPosition(
   node: { position: Position; size?: Size },
   portId: PortId,
-  defaultNodeSize: Size = { width: 150, height: 60 }
+  defaultNodeSize: Size = { width: 150, height: 60 },
 ): Position {
-  const size = node.size ?? defaultNodeSize
-  const { x, y } = node.position
+  const size = node.size ?? defaultNodeSize;
+  const { x, y } = node.position;
 
   switch (portId) {
     case 'top':
-      return { x: x + size.width / 2, y }
+      return { x: x + size.width / 2, y };
     case 'right':
-      return { x: x + size.width, y: y + size.height / 2 }
+      return { x: x + size.width, y: y + size.height / 2 };
     case 'bottom':
-      return { x: x + size.width / 2, y: y + size.height }
+      return { x: x + size.width / 2, y: y + size.height };
     case 'left':
-      return { x, y: y + size.height / 2 }
+      return { x, y: y + size.height / 2 };
   }
 }
 ```
@@ -101,21 +101,21 @@ export function getPortAbsolutePosition(
   node: { position: Position; size?: Size },
   portId: PortId,
   portSize: number,
-  defaultNodeSize: Size = { width: 150, height: 60 }
+  defaultNodeSize: Size = { width: 150, height: 60 },
 ): Position {
-  const size = node.size ?? defaultNodeSize
-  const halfPort = portSize / 2
-  const { x, y } = node.position
+  const size = node.size ?? defaultNodeSize;
+  const halfPort = portSize / 2;
+  const { x, y } = node.position;
 
   switch (portId) {
     case 'top':
-      return { x: x + size.width / 2, y: y - halfPort }
+      return { x: x + size.width / 2, y: y - halfPort };
     case 'right':
-      return { x: x + size.width + halfPort, y: y + size.height / 2 }
+      return { x: x + size.width + halfPort, y: y + size.height / 2 };
     case 'bottom':
-      return { x: x + size.width / 2, y: y + size.height + halfPort }
+      return { x: x + size.width / 2, y: y + size.height + halfPort };
     case 'left':
-      return { x: x - halfPort, y: y + size.height / 2 }
+      return { x: x - halfPort, y: y + size.height / 2 };
   }
 }
 ```
@@ -127,7 +127,7 @@ reta que representa uma edge.
 
 ```typescript
 export function calcLineAngle(from: Position, to: Position): number {
-  return Math.atan2(to.y - from.y, to.x - from.x) * (180 / Math.PI)
+  return Math.atan2(to.y - from.y, to.x - from.x) * (180 / Math.PI);
 }
 ```
 
@@ -138,9 +138,9 @@ largura da linha reta que representa uma edge.
 
 ```typescript
 export function calcLineLength(from: Position, to: Position): number {
-  const dx = to.x - from.x
-  const dy = to.y - from.y
-  return Math.sqrt(dx * dx + dy * dy)
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  return Math.sqrt(dx * dx + dy * dy);
 }
 ```
 
@@ -150,7 +150,7 @@ Limita um valor a um range [min, max].
 
 ```typescript
 export function clamp(value: number, min: number, max: number): number {
-  return Math.min(Math.max(value, min), max)
+  return Math.min(Math.max(value, min), max);
 }
 ```
 
@@ -163,7 +163,7 @@ export function snapToGrid(position: Position, gridSize: number): Position {
   return {
     x: Math.round(position.x / gridSize) * gridSize,
     y: Math.round(position.y / gridSize) * gridSize,
-  }
+  };
 }
 ```
 
@@ -178,8 +178,8 @@ export function getOppositePort(portId: PortId): PortId {
     right: 'left',
     bottom: 'top',
     left: 'right',
-  }
-  return opposites[portId]
+  };
+  return opposites[portId];
 }
 ```
 
@@ -189,7 +189,7 @@ Retorna a distância euclidiana entre dois pontos. Alias mais legível para `cal
 
 ```typescript
 export function distanceBetween(a: Position, b: Position): number {
-  return calcLineLength(a, b)
+  return calcLineLength(a, b);
 }
 ```
 
@@ -200,28 +200,28 @@ retorna o port mais próximo dentro de um threshold.
 
 ```typescript
 interface PortWithPosition {
-  nodeId: string
-  portId: PortId
-  position: Position
+  nodeId: string;
+  portId: PortId;
+  position: Position;
 }
 
 export function findClosestPort(
   position: Position,
   ports: PortWithPosition[],
-  threshold: number = 20
+  threshold: number = 20,
 ): PortWithPosition | null {
-  let closest: PortWithPosition | null = null
-  let minDist = threshold
+  let closest: PortWithPosition | null = null;
+  let minDist = threshold;
 
   for (const port of ports) {
-    const dist = distanceBetween(position, port.position)
+    const dist = distanceBetween(position, port.position);
     if (dist < minDist) {
-      minDist = dist
-      closest = port
+      minDist = dist;
+      closest = port;
     }
   }
 
-  return closest
+  return closest;
 }
 ```
 

@@ -29,49 +29,49 @@ HTML+CSS (padrão), SVG, Canvas, entre outras.
 ### Definição
 
 ```typescript
-import type { Edge, Position, FlowboardTheme } from '../types'
+import type { Edge, Position, FlowboardTheme } from '../types';
 
 export interface EdgeRenderEngineProps<TData = Record<string, unknown>> {
-  edge: Edge<TData>
-  sourcePosition: Position
-  targetPosition: Position
-  selected: boolean
-  zoom: number
-  theme: FlowboardTheme
+  edge: Edge<TData>;
+  sourcePosition: Position;
+  targetPosition: Position;
+  selected: boolean;
+  zoom: number;
+  theme: FlowboardTheme;
 }
 
 export interface EdgeRenderEngine<TData = Record<string, unknown>> {
   /**
    * Renderiza uma edge específica
    */
-  renderEdge(props: EdgeRenderEngineProps<TData>): React.ReactNode
+  renderEdge(props: EdgeRenderEngineProps<TData>): React.ReactNode;
 
   /**
    * Renderiza o container para todas as edges (opcional)
    * Útil para SVG (precisa de um elemento <svg>) ou Canvas
    */
-  renderContainer?(children: React.ReactNode): React.ReactNode
+  renderContainer?(children: React.ReactNode): React.ReactNode;
 
   /**
    * Identificador único do engine
    */
-  readonly id: string
+  readonly id: string;
 
   /**
    * Nome descritivo do engine
    */
-  readonly name: string
+  readonly name: string;
 }
 ```
 
 ### Campos
 
-| Campo | Tipo | Obrigatório | Descrição |
-|-------|------|-------------|-----------|
-| `id` | `string` | Sim | Identificador único (ex: 'html-css', 'svg', 'canvas') |
-| `name` | `string` | Sim | Nome descritivo (ex: 'HTML+CSS', 'SVG', 'Canvas') |
-| `renderEdge` | `(props) => ReactNode` | Sim | Renderiza uma edge |
-| `renderContainer` | `(children) => ReactNode` | Não | Container para todas as edges |
+| Campo             | Tipo                      | Obrigatório | Descrição                                             |
+| ----------------- | ------------------------- | ----------- | ----------------------------------------------------- |
+| `id`              | `string`                  | Sim         | Identificador único (ex: 'html-css', 'svg', 'canvas') |
+| `name`            | `string`                  | Sim         | Nome descritivo (ex: 'HTML+CSS', 'SVG', 'Canvas')     |
+| `renderEdge`      | `(props) => ReactNode`    | Sim         | Renderiza uma edge                                    |
+| `renderContainer` | `(children) => ReactNode` | Não         | Container para todas as edges                         |
 
 ---
 
@@ -303,11 +303,11 @@ export class CanvasEdgeEngine implements EdgeRenderEngine {
 
       // Renderiza todas as edges
       for (const { edge, sourcePosition, targetPosition, selected } of this.edges) {
-        const strokeWidth = selected 
-          ? this.theme.edge.selectedStrokeWidth 
+        const strokeWidth = selected
+          ? this.theme.edge.selectedStrokeWidth
           : this.theme.edge.strokeWidth
-        const color = selected 
-          ? this.theme.edge.selectedStroke 
+        const color = selected
+          ? this.theme.edge.selectedStroke
           : this.theme.edge.stroke
 
         ctx.beginPath()
@@ -322,11 +322,11 @@ export class CanvasEdgeEngine implements EdgeRenderEngine {
         const handleRadius = 6
         ctx.fillStyle = 'transparent'
         ctx.strokeStyle = 'transparent'
-        
+
         ctx.beginPath()
         ctx.arc(sourcePosition.x, sourcePosition.y, handleRadius, 0, Math.PI * 2)
         ctx.fill()
-        
+
         ctx.beginPath()
         ctx.arc(targetPosition.x, targetPosition.y, handleRadius, 0, Math.PI * 2)
         ctx.fill()
@@ -362,10 +362,10 @@ export class CanvasEdgeEngine implements EdgeRenderEngine {
 ### Modo Simples (motor padrão)
 
 ```tsx
-import { Flowboard } from 'flowboard'
+import { Flowboard } from 'flowboard';
 
 // Usa HTML+CSS por padrão
-<Flowboard nodes={nodes} edges={edges} />
+<Flowboard nodes={nodes} edges={edges} />;
 ```
 
 ### Com Motor SVG
@@ -376,8 +376,8 @@ import { SvgEdgeEngine } from 'flowboard/engines/svg'
 
 const svgEngine = new SvgEdgeEngine()
 
-<Flowboard 
-  nodes={nodes} 
+<Flowboard
+  nodes={nodes}
   edges={edges}
   edgeEngine={svgEngine}
 />
@@ -391,8 +391,8 @@ import { CanvasEdgeEngine } from 'flowboard/engines/canvas'
 
 const canvasEngine = new CanvasEdgeEngine()
 
-<Flowboard 
-  nodes={nodes} 
+<Flowboard
+  nodes={nodes}
   edges={edges}
   edgeEngine={canvasEngine}
 />
@@ -418,8 +418,8 @@ class MyCustomEngine implements EdgeRenderEngine {
 }
 
 // Uso
-<Flowboard 
-  nodes={nodes} 
+<Flowboard
+  nodes={nodes}
   edges={edges}
   edgeEngine={new MyCustomEngine()}
 />
@@ -437,7 +437,7 @@ export interface FlowboardProps<TNode, TEdge> {
    * Motor de renderização de edges
    * @default HtmlCssEdgeEngine
    */
-  edgeEngine?: EdgeRenderEngine<TEdge>
+  edgeEngine?: EdgeRenderEngine<TEdge>;
 }
 ```
 
@@ -454,7 +454,7 @@ function Stage({ children, containerSize, edgeEngine }: StageProps) {
   return (
     <div className={styles.stage} style={{ /* ... */ }}>
       {theme.stage.gridVisible && <Grid />}
-      
+
       {/* Container do engine (se houver) */}
       {engine.renderContainer ? (
         engine.renderContainer(
@@ -502,15 +502,15 @@ function Stage({ children, containerSize, edgeEngine }: StageProps) {
 
 ## Comparação de Engines
 
-| Feature | HTML+CSS | SVG | Canvas |
-|---------|----------|-----|--------|
-| **Performance** | Boa (~100) | Melhor (~500) | Ótima (~1000+) |
-| **Bezier curves** | Manual | Nativo | Manual |
-| **Zoom/Pan** | Via CSS transform | Via SVG viewBox | Via ctx.transform |
-| **Eventos** | Automático | Automático | Manual |
-| **Antialiasing** | Browser | Browser | Canvas |
-| **Memória** | Baixa | Média | Baixa |
-| **Complexidade** | Baixa | Média | Alta |
+| Feature           | HTML+CSS          | SVG             | Canvas            |
+| ----------------- | ----------------- | --------------- | ----------------- |
+| **Performance**   | Boa (~100)        | Melhor (~500)   | Ótima (~1000+)    |
+| **Bezier curves** | Manual            | Nativo          | Manual            |
+| **Zoom/Pan**      | Via CSS transform | Via SVG viewBox | Via ctx.transform |
+| **Eventos**       | Automático        | Automático      | Manual            |
+| **Antialiasing**  | Browser           | Browser         | Canvas            |
+| **Memória**       | Baixa             | Média           | Baixa             |
+| **Complexidade**  | Baixa             | Média           | Alta              |
 
 ---
 

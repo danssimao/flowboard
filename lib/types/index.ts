@@ -1,1 +1,1 @@
-export type WidgetTheme = 'light' | 'dark'
+export type WidgetTheme = 'light' | 'dark';

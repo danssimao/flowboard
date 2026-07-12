@@ -11,6 +11,7 @@ uma demo no playground.
 > mais detalhes.
 
 > **Compound Pattern:** O componente Flowboard root suporta dois modos:
+>
 > 1. **Modo Simples** — usa props para definir nodes/edges (backward compatible)
 > 2. **Modo Compound** — usa sub-componentes para customização avançada
 
@@ -51,7 +52,7 @@ uma demo no playground.
 Usa `FlowboardProps` definido na Fase 1.
 
 ```typescript
-import type { FlowboardProps } from '../../types'
+import type { FlowboardProps } from '../../types';
 ```
 
 ### Comportamento
@@ -491,26 +492,26 @@ export const Flowboard = FlowboardRoot
 
 ```typescript
 // Componentes
-export { Flowboard } from './components/Flowboard'
+export { Flowboard } from './components/Flowboard';
 
 // Compound components (acessíveis via Flowboard.Stage, etc.)
-export { FlowboardStage } from './components/Flowboard/Flowboard.Stage'
-export { FlowboardNode } from './components/Flowboard/Flowboard.Node'
-export { FlowboardNodePort } from './components/Flowboard/Flowboard.Node.Port'
-export { FlowboardEdge } from './components/Flowboard/Flowboard.Edge'
-export { FlowboardMenu } from './components/Flowboard/Flowboard.Menu'
-export { FlowboardFooter } from './components/Flowboard/Flowboard.Footer'
-export { FlowboardTarget } from './components/Flowboard/Flowboard.Target'
+export { FlowboardStage } from './components/Flowboard/Flowboard.Stage';
+export { FlowboardNode } from './components/Flowboard/Flowboard.Node';
+export { FlowboardNodePort } from './components/Flowboard/Flowboard.Node.Port';
+export { FlowboardEdge } from './components/Flowboard/Flowboard.Edge';
+export { FlowboardMenu } from './components/Flowboard/Flowboard.Menu';
+export { FlowboardFooter } from './components/Flowboard/Flowboard.Footer';
+export { FlowboardTarget } from './components/Flowboard/Flowboard.Target';
 
 // Render Engines
-export { HtmlCssEdgeEngine } from './engines/html-css'
-export { SvgEdgeEngine } from './engines/svg'
-export { CanvasEdgeEngine } from './engines/canvas'
+export { HtmlCssEdgeEngine } from './engines/html-css';
+export { SvgEdgeEngine } from './engines/svg';
+export { CanvasEdgeEngine } from './engines/canvas';
 
 // Hooks
-export { useFlowboard } from './hooks/useFlowboard'
-export { useFlowboardActions } from './hooks/useFlowboardActions'
-export { useMenuDrag } from './hooks/useMenuDrag'
+export { useFlowboard } from './hooks/useFlowboard';
+export { useFlowboardActions } from './hooks/useFlowboardActions';
+export { useMenuDrag } from './hooks/useMenuDrag';
 
 // Tipos
 export type {
@@ -533,9 +534,9 @@ export type {
   Size,
   NodeRenderProps,
   EdgeRenderProps,
-} from './types'
+} from './types';
 
-export type { FlowboardTheme } from './theme/types'
+export type { FlowboardTheme } from './theme/types';
 ```
 
 ---
@@ -735,13 +736,13 @@ export default function App() {
 
 ### Arquivos a Remover
 
-| Arquivo | Substituído por |
-|---------|----------------|
-| `lib/components/Widget/Widget.tsx` | `lib/components/Flowboard/Flowboard.tsx` |
+| Arquivo                                   | Substituído por                                 |
+| ----------------------------------------- | ----------------------------------------------- |
+| `lib/components/Widget/Widget.tsx`        | `lib/components/Flowboard/Flowboard.tsx`        |
 | `lib/components/Widget/Widget.module.css` | `lib/components/Flowboard/Flowboard.module.css` |
-| `lib/components/Widget/Widget.test.tsx` | `lib/components/Flowboard/Flowboard.test.tsx` |
-| `lib/hooks/useWidget.ts` | `lib/hooks/useFlowboard.ts` |
-| `lib/hooks/useWidget.test.ts` | `lib/hooks/useFlowboard.test.ts` |
+| `lib/components/Widget/Widget.test.tsx`   | `lib/components/Flowboard/Flowboard.test.tsx`   |
+| `lib/hooks/useWidget.ts`                  | `lib/hooks/useFlowboard.ts`                     |
+| `lib/hooks/useWidget.test.ts`             | `lib/hooks/useFlowboard.test.ts`                |
 
 ### Atualização de Imports
 

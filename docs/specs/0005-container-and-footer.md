@@ -33,9 +33,9 @@ O Footer é uma barra fixa no fundo com controles (snap-to-grid toggle).
 
 ```typescript
 interface ContainerProps {
-  children: React.ReactNode
-  style?: React.CSSProperties
-  className?: string
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+  className?: string;
 }
 ```
 
@@ -61,10 +61,10 @@ interface ContainerProps {
 
 O Container distingue entre mouse e trackpad pela origem do evento:
 
-| Input | Pan | Zoom | Como funciona |
-|-------|-----|------|---------------|
-| **Mouse** | Pointer drag no fundo | Scroll wheel | pointerDown inicia pan, pointerMove atualiza, pointerUp finaliza |
-| **Trackpad** | Two-finger scroll | Pinch (ctrl+scroll) | wheel events tratados pelo usePanZoom no Stage |
+| Input        | Pan                   | Zoom                | Como funciona                                                    |
+| ------------ | --------------------- | ------------------- | ---------------------------------------------------------------- |
+| **Mouse**    | Pointer drag no fundo | Scroll wheel        | pointerDown inicia pan, pointerMove atualiza, pointerUp finaliza |
+| **Trackpad** | Two-finger scroll     | Pinch (ctrl+scroll) | wheel events tratados pelo usePanZoom no Stage                   |
 
 **Regra:** O `pointerDown` no fundo só inicia pan quando `e.pointerType === 'mouse'`.
 Para trackpad, o pan é feito via wheel events (two-finger scroll), que são

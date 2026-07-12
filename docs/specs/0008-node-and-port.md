@@ -37,10 +37,10 @@ como pontos de conexão para arestas.
 
 ```typescript
 interface UseDragNodeOptions {
-  nodeId: string
-  position: Position
-  size: Size
-  zoom: number
+  nodeId: string;
+  position: Position;
+  size: Size;
+  zoom: number;
 }
 ```
 
@@ -48,98 +48,103 @@ interface UseDragNodeOptions {
 
 ```typescript
 interface UseDragNodeReturn {
-  handlePointerDown: (e: React.PointerEvent) => void
-  isDragging: boolean
+  handlePointerDown: (e: React.PointerEvent) => void;
+  isDragging: boolean;
 }
 ```
 
 ### Implementação
 
 ```typescript
-import { useCallback, useRef, useState } from 'react'
-import { useFlowboardActions } from './useFlowboardActions'
-import { useFlowboard } from './useFlowboard'
-import { clamp, snapToGrid } from '../utils/geometry'
+import { useCallback, useRef, useState } from 'react';
+import { useFlowboardActions } from './useFlowboardActions';
+import { useFlowboard } from './useFlowboard';
+import { clamp, snapToGrid } from '../utils/geometry';
 
-export function useDragNode({ nodeId, position, size, zoom }: UseDragNodeOptions) {
-  const { state, theme } = useFlowboard()
-  const actions = useFlowboardActions()
-  const [isDragging, setIsDragging] = useState(false)
+export function useDragNode({
+  nodeId,
+  position,
+  size,
+  zoom,
+}: UseDragNodeOptions) {
+  const { state, theme } = useFlowboard();
+  const actions = useFlowboardActions();
+  const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef<{
-    startPos: Position
-    nodeStartPos: Position
-  } | null>(null)
+    startPos: Position;
+    nodeStartPos: Position;
+  } | null>(null);
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
-      e.preventDefault()
-      e.stopPropagation()
+      e.preventDefault();
+      e.stopPropagation();
 
       dragRef.current = {
         startPos: { x: e.clientX, y: e.clientY },
         nodeStartPos: { ...position },
-      }
+      };
 
-      setIsDragging(true)
+      setIsDragging(true);
       actions.setDragState({
         type: 'node',
         nodeId,
         startPos: { x: e.clientX, y: e.clientY },
         currentPos: { x: e.clientX, y: e.clientY },
-      })
-      actions.selectNode(nodeId)
+      });
+      actions.selectNode(nodeId);
 
       // Capturar pointer para receber eventos mesmo fora do elemento
-      ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
+      (e.target as HTMLElement).setPointerCapture(e.pointerId);
     },
-    [nodeId, position, actions]
-  )
+    [nodeId, position, actions],
+  );
 
   const handlePointerMove = useCallback(
     (e: React.PointerEvent) => {
-      if (!dragRef.current) return
+      if (!dragRef.current) return;
 
-      const dx = (e.clientX - dragRef.current.startPos.x) / zoom
-      const dy = (e.clientY - dragRef.current.startPos.y) / zoom
+      const dx = (e.clientX - dragRef.current.startPos.x) / zoom;
+      const dy = (e.clientY - dragRef.current.startPos.y) / zoom;
 
       let newPos = {
         x: dragRef.current.nodeStartPos.x + dx,
         y: dragRef.current.nodeStartPos.y + dy,
-      }
+      };
 
       // Aplicar snap-to-grid se habilitado
       if (state.snapEnabled) {
-        newPos = snapToGrid(newPos, theme.stage.gridSize)
+        newPos = snapToGrid(newPos, theme.stage.gridSize);
       }
 
       // Limitar aos bounds do stage (x >= 0, y >= 0)
       newPos = {
         x: Math.max(0, newPos.x),
         y: Math.max(0, newPos.y),
-      }
+      };
 
-      actions.moveNode(nodeId, newPos)
+      actions.moveNode(nodeId, newPos);
     },
-    [nodeId, zoom, state.snapEnabled, theme.stage.gridSize, actions]
-  )
+    [nodeId, zoom, state.snapEnabled, theme.stage.gridSize, actions],
+  );
 
   const handlePointerUp = useCallback(
     (e: React.PointerEvent) => {
-      if (!dragRef.current) return
+      if (!dragRef.current) return;
 
-      setIsDragging(false)
-      dragRef.current = null
-      actions.setDragState(null)
+      setIsDragging(false);
+      dragRef.current = null;
+      actions.setDragState(null);
     },
-    [actions]
-  )
+    [actions],
+  );
 
   return {
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
     isDragging,
-  }
+  };
 }
 ```
 
@@ -173,9 +178,9 @@ export function useDragNode({ nodeId, position, size, zoom }: UseDragNodeOptions
 
 ```typescript
 interface NodeProps<TData> {
-  node: Node<TData>
-  nodeComponent: React.ComponentType<NodeRenderProps<TData>>
-  zoom: number
+  node: Node<TData>;
+  nodeComponent: React.ComponentType<NodeRenderProps<TData>>;
+  zoom: number;
 }
 ```
 
@@ -303,10 +308,10 @@ export function Node<TData>({ node, nodeComponent: NodeComponent, zoom }: NodePr
   --node-border-color: #dee2e6;
   --node-border-width: 1px;
   --node-border-radius: 8px;
-  --node-box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  --node-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   --node-selected-border-color: #4dabf7;
   --node-selected-border-width: 2px;
-  --node-selected-box-shadow: 0 0 0 2px rgba(77,171,247,0.25);
+  --node-selected-box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.25);
   --node-padding: 12px;
 }
 ```
@@ -319,10 +324,10 @@ export function Node<TData>({ node, nodeComponent: NodeComponent, zoom }: NodePr
 
 ```typescript
 interface PortProps {
-  nodeId: string
-  portId: PortId
-  nodeSize: Size
-  zoom: number
+  nodeId: string;
+  portId: PortId;
+  nodeSize: Size;
+  zoom: number;
 }
 ```
 
@@ -442,7 +447,9 @@ export function Port({ nodeId, portId, nodeSize, zoom }: PortProps) {
   border: 2px solid var(--port-border-color);
   cursor: crosshair;
   z-index: 5;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
   pointer-events: auto;
 }
 
