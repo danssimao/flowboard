@@ -3,5 +3,6 @@
   "compilerOptions": {
     "types": ["vitest/globals"]
   },
-  "include": ["lib/**/*.test.*", "lib/test"]
+  "include": ["lib/**/*.test.*", "lib/test"],
+  "exclude": []
 }

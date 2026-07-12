@@ -41,11 +41,11 @@ O Target é um elemento que segue o cursor durante operações de drag
 
 ```typescript
 interface DragEdgeState {
-  edgeId: string | null
-  source: EdgeEndpoint | null
-  target: EdgeEndpoint | null
-  mousePosition: Position
-  mode: 'create' | 'disconnect'
+  edgeId: string | null;
+  source: EdgeEndpoint | null;
+  target: EdgeEndpoint | null;
+  mousePosition: Position;
+  mode: 'create' | 'disconnect';
 }
 ```
 
@@ -53,25 +53,25 @@ interface DragEdgeState {
 
 ```typescript
 interface UseDragEdgeReturn {
-  startCreate: (source: EdgeEndpoint, mousePos: Position) => void
-  updateMouse: (pos: Position) => void
-  completeConnection: (target: EdgeEndpoint) => void
-  cancelDrag: () => void
-  dragState: DragEdgeState | null
+  startCreate: (source: EdgeEndpoint, mousePos: Position) => void;
+  updateMouse: (pos: Position) => void;
+  completeConnection: (target: EdgeEndpoint) => void;
+  cancelDrag: () => void;
+  dragState: DragEdgeState | null;
 }
 ```
 
 ### Implementação
 
 ```typescript
-import { useCallback } from 'react'
-import { useFlowboard } from './useFlowboard'
-import { useFlowboardActions } from './useFlowboardActions'
-import { generateId } from '../utils/uuid'
+import { useCallback } from 'react';
+import { useFlowboard } from './useFlowboard';
+import { useFlowboardActions } from './useFlowboardActions';
+import { generateId } from '../utils/uuid';
 
 export function useDragEdge() {
-  const { state } = useFlowboard()
-  const actions = useFlowboardActions()
+  const { state } = useFlowboard();
+  const actions = useFlowboardActions();
 
   const startCreate = useCallback(
     (source: EdgeEndpoint, mousePos: Position) => {
@@ -80,39 +80,39 @@ export function useDragEdge() {
         edgeId: generateId(),
         source,
         mousePos,
-      })
+      });
     },
-    [actions]
-  )
+    [actions],
+  );
 
   const updateMouse = useCallback(
     (pos: Position) => {
-      if (!state.dragState) return
+      if (!state.dragState) return;
 
       if (state.dragState.type === 'edge-create') {
         actions.setDragState({
           ...state.dragState,
           mousePos: pos,
-        })
+        });
       } else if (state.dragState.type === 'edge-disconnect') {
         actions.setDragState({
           ...state.dragState,
           mousePos: pos,
-        })
+        });
       }
     },
-    [state.dragState, actions]
-  )
+    [state.dragState, actions],
+  );
 
   const completeConnection = useCallback(
     (target: EdgeEndpoint) => {
-      if (!state.dragState) return
+      if (!state.dragState) return;
 
       if (state.dragState.type === 'edge-create') {
         // Validar: não auto-conexão
         if (state.dragState.source.nodeId === target.nodeId) {
-          actions.setDragState(null)
-          return
+          actions.setDragState(null);
+          return;
         }
 
         actions.addEdge({
@@ -120,38 +120,41 @@ export function useDragEdge() {
           source: state.dragState.source,
           target,
           data: {},
-        })
+        });
       } else if (state.dragState.type === 'edge-disconnect') {
         // Reconectar o endpoint desconectado
-        const update = state.dragState.disconnectedSide === 'source'
-          ? { source: target }
-          : { target }
+        const update =
+          state.dragState.disconnectedSide === 'source'
+            ? { source: target }
+            : { target };
 
-        actions.updateEdge(state.dragState.edgeId, update)
+        actions.updateEdge(state.dragState.edgeId, update);
       }
 
-      actions.setDragState(null)
+      actions.setDragState(null);
     },
-    [state.dragState, actions]
-  )
+    [state.dragState, actions],
+  );
 
   const cancelDrag = useCallback(() => {
     if (state.dragState?.type === 'edge-disconnect') {
       // Se estava desconectando e cancelou, remover a edge
-      actions.removeEdge(state.dragState.edgeId)
+      actions.removeEdge(state.dragState.edgeId);
     }
-    actions.setDragState(null)
-  }, [state.dragState, actions])
+    actions.setDragState(null);
+  }, [state.dragState, actions]);
 
   return {
     startCreate,
     updateMouse,
     completeConnection,
     cancelDrag,
-    dragState: state.dragState?.type === 'edge-create' || state.dragState?.type === 'edge-disconnect'
-      ? state.dragState
-      : null,
-  }
+    dragState:
+      state.dragState?.type === 'edge-create' ||
+      state.dragState?.type === 'edge-disconnect'
+        ? state.dragState
+        : null,
+  };
 }
 ```
 
@@ -201,15 +204,15 @@ export function useDragEdge() {
 function isValidConnection(
   source: EdgeEndpoint,
   target: EdgeEndpoint,
-  existingEdges: Edge[]
+  existingEdges: Edge[],
 ): boolean {
   // Não pode conectar um node consigo mesmo
-  if (source.nodeId === target.nodeId) return false
+  if (source.nodeId === target.nodeId) return false;
 
   // Pode haver múltiplas arestas entre o mesmo par de nodes (multigraph)
   // Então não precisamos verificar duplicatas
 
-  return true
+  return true;
 }
 ```
 
@@ -221,12 +224,12 @@ function isValidConnection(
 
 ```typescript
 interface EdgeProps<TData> {
-  edge: Edge<TData>
-  edgeComponent?: React.ComponentType<EdgeRenderProps<TData>>
-  sourcePosition: Position
-  targetPosition: Position
-  selected: boolean
-  zoom: number
+  edge: Edge<TData>;
+  edgeComponent?: React.ComponentType<EdgeRenderProps<TData>>;
+  sourcePosition: Position;
+  targetPosition: Position;
+  selected: boolean;
+  zoom: number;
 }
 ```
 
@@ -249,10 +252,10 @@ function calcLineStyle(
   from: Position,
   to: Position,
   strokeWidth: number,
-  color: string
+  color: string,
 ): React.CSSProperties {
-  const length = calcLineLength(from, to)
-  const angle = calcLineAngle(from, to)
+  const length = calcLineLength(from, to);
+  const angle = calcLineAngle(from, to);
 
   return {
     position: 'absolute',
@@ -265,7 +268,7 @@ function calcLineStyle(
     transform: `rotate(${angle}deg)`,
     borderRadius: strokeWidth / 2,
     pointerEvents: 'none',
-  }
+  };
 }
 ```
 

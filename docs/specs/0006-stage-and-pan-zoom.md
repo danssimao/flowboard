@@ -34,15 +34,16 @@ posições dos nodes.
 
 O hook `usePanZoom` unifica o tratamento de pan e zoom para mouse e trackpad:
 
-| Evento | Comportamento | Dispositivo |
-|--------|---------------|-------------|
-| `wheel` + `ctrlKey: false` | **Pan** (two-finger scroll) | Trackpad |
-| `wheel` + `ctrlKey: true` | **Zoom** (pinch) | Trackpad |
-| `wheel` + `ctrlKey: false` + `deltaMode: 1` | **Pan** (scroll do mouse) | Mouse wheel |
-| `wheel` + `ctrlKey: true` + `deltaMode: 1` | **Zoom** (ctrl+scroll) | Mouse wheel |
-| `pointerDown` no fundo | **Pan** (drag) | Mouse (tratado no Container) |
+| Evento                                      | Comportamento               | Dispositivo                  |
+| ------------------------------------------- | --------------------------- | ---------------------------- |
+| `wheel` + `ctrlKey: false`                  | **Pan** (two-finger scroll) | Trackpad                     |
+| `wheel` + `ctrlKey: true`                   | **Zoom** (pinch)            | Trackpad                     |
+| `wheel` + `ctrlKey: false` + `deltaMode: 1` | **Pan** (scroll do mouse)   | Mouse wheel                  |
+| `wheel` + `ctrlKey: true` + `deltaMode: 1`  | **Zoom** (ctrl+scroll)      | Mouse wheel                  |
+| `pointerDown` no fundo                      | **Pan** (drag)              | Mouse (tratado no Container) |
 
 **Normalização de delta:**
+
 - `deltaMode === 0` (pixels): valor direto do trackpad (pequeno, preciso)
 - `deltaMode === 1` (lines): valor do mouse wheel (multiplicar por ~16 para normalizar)
 - `deltaMode === 2` (pages): raro, tratar como lines
@@ -51,8 +52,8 @@ O hook `usePanZoom` unifica o tratamento de pan e zoom para mouse e trackpad:
 
 ```typescript
 interface PanZoomState {
-  offset: Position
-  zoom: number
+  offset: Position;
+  zoom: number;
 }
 ```
 
@@ -60,131 +61,134 @@ interface PanZoomState {
 
 ```typescript
 interface UsePanZoomReturn {
-  offset: Position
-  zoom: number
-  handleWheel: (e: React.WheelEvent) => void
-  startPan: (startPos: Position) => void
-  updatePan: (currentPos: Position) => void
-  endPan: () => void
-  screenToStage: (screenPos: Position) => Position
-  stageToScreen: (stagePos: Position) => Position
+  offset: Position;
+  zoom: number;
+  handleWheel: (e: React.WheelEvent) => void;
+  startPan: (startPos: Position) => void;
+  updatePan: (currentPos: Position) => void;
+  endPan: () => void;
+  screenToStage: (screenPos: Position) => Position;
+  stageToScreen: (stagePos: Position) => Position;
 }
 ```
 
 ### Implementação
 
 ```typescript
-import { useCallback, useRef } from 'react'
-import { useFlowboard } from './useFlowboard'
-import { useFlowboardActions } from './useFlowboardActions'
-import { clamp } from '../utils/geometry'
+import { useCallback, useRef } from 'react';
+import { useFlowboard } from './useFlowboard';
+import { useFlowboardActions } from './useFlowboardActions';
+import { clamp } from '../utils/geometry';
 
 export function usePanZoom() {
-  const { state, minZoom, maxZoom } = useFlowboard()
-  const { zoom, panOffset } = state
-  const actions = useFlowboardActions()
-  const panStartRef = useRef<{ startPos: Position; startOffset: Position } | null>(null)
+  const { state, minZoom, maxZoom } = useFlowboard();
+  const { zoom, panOffset } = state;
+  const actions = useFlowboardActions();
+  const panStartRef = useRef<{
+    startPos: Position;
+    startOffset: Position;
+  } | null>(null);
 
   const handleWheel = useCallback(
     (e: React.WheelEvent) => {
-      e.preventDefault()
+      e.preventDefault();
 
-      const rect = (e.target as HTMLElement).getBoundingClientRect()
-      const mouseX = e.clientX - rect.left
-      const mouseY = e.clientY - rect.top
+      const rect = (e.target as HTMLElement).getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
 
       if (e.ctrlKey) {
         // ===== ZOOM (pinch no trackpad ou ctrl+scroll no mouse) =====
-        const zoomFactor = 1.1
-        const delta = e.deltaY > 0 ? 1 / zoomFactor : zoomFactor
-        const newZoom = clamp(zoom * delta, minZoom, maxZoom)
+        const zoomFactor = 1.1;
+        const delta = e.deltaY > 0 ? 1 / zoomFactor : zoomFactor;
+        const newZoom = clamp(zoom * delta, minZoom, maxZoom);
 
         // Zoom centrado no ponto do mouse/pinch
-        const stageX = (mouseX - panOffset.x) / zoom
-        const stageY = (mouseY - panOffset.y) / zoom
-        const newOffsetX = mouseX - stageX * newZoom
-        const newOffsetY = mouseY - stageY * newZoom
+        const stageX = (mouseX - panOffset.x) / zoom;
+        const stageY = (mouseY - panOffset.y) / zoom;
+        const newOffsetX = mouseX - stageX * newZoom;
+        const newOffsetY = mouseY - stageY * newZoom;
 
-        actions.setZoom(newZoom)
-        actions.setPan({ x: newOffsetX, y: newOffsetY })
+        actions.setZoom(newZoom);
+        actions.setPan({ x: newOffsetX, y: newOffsetY });
       } else {
         // ===== PAN (two-finger scroll no trackpad ou scroll no mouse) =====
         // Normalizar delta baseado no deltaMode
         // deltaMode 0 = pixels (trackpad), 1 = lines (mouse wheel), 2 = pages
-        let dx: number
-        let dy: number
+        let dx: number;
+        let dy: number;
 
         switch (e.deltaMode) {
           case 0: // Pixels (trackpad)
-            dx = -e.deltaX
-            dy = -e.deltaY
-            break
+            dx = -e.deltaX;
+            dy = -e.deltaY;
+            break;
           case 1: // Lines (mouse wheel)
-            dx = -e.deltaX * 16
-            dy = -e.deltaY * 16
-            break
+            dx = -e.deltaX * 16;
+            dy = -e.deltaY * 16;
+            break;
           case 2: // Pages (raro)
-            dx = -e.deltaX * 400
-            dy = -e.deltaY * 400
-            break
+            dx = -e.deltaX * 400;
+            dy = -e.deltaY * 400;
+            break;
           default:
-            dx = -e.deltaX
-            dy = -e.deltaY
+            dx = -e.deltaX;
+            dy = -e.deltaY;
         }
 
         actions.setPan({
           x: panOffset.x + dx,
           y: panOffset.y + dy,
-        })
+        });
       }
     },
-    [zoom, panOffset, minZoom, maxZoom, actions]
-  )
+    [zoom, panOffset, minZoom, maxZoom, actions],
+  );
 
   const startPan = useCallback(
     (startPos: Position) => {
       panStartRef.current = {
         startPos,
         startOffset: { ...panOffset },
-      }
+      };
     },
-    [panOffset]
-  )
+    [panOffset],
+  );
 
   const updatePan = useCallback(
     (currentPos: Position) => {
-      if (!panStartRef.current) return
+      if (!panStartRef.current) return;
 
-      const dx = currentPos.x - panStartRef.current.startPos.x
-      const dy = currentPos.y - panStartRef.current.startPos.y
+      const dx = currentPos.x - panStartRef.current.startPos.x;
+      const dy = currentPos.y - panStartRef.current.startPos.y;
 
       actions.setPan({
         x: panStartRef.current.startOffset.x + dx,
         y: panStartRef.current.startOffset.y + dy,
-      })
+      });
     },
-    [actions]
-  )
+    [actions],
+  );
 
   const endPan = useCallback(() => {
-    panStartRef.current = null
-  }, [])
+    panStartRef.current = null;
+  }, []);
 
   const screenToStage = useCallback(
     (screenPos: Position): Position => ({
       x: (screenPos.x - panOffset.x) / zoom,
       y: (screenPos.y - panOffset.y) / zoom,
     }),
-    [panOffset, zoom]
-  )
+    [panOffset, zoom],
+  );
 
   const stageToScreen = useCallback(
     (stagePos: Position): Position => ({
       x: stagePos.x * zoom + panOffset.x,
       y: stagePos.y * zoom + panOffset.y,
     }),
-    [panOffset, zoom]
-  )
+    [panOffset, zoom],
+  );
 
   return {
     offset: panOffset,
@@ -195,7 +199,7 @@ export function usePanZoom() {
     endPan,
     screenToStage,
     stageToScreen,
-  }
+  };
 }
 ```
 
@@ -234,13 +238,13 @@ export function usePanZoom() {
 screenToStage(screenPos) = {
   x: (screenPos.x - offset.x) / zoom,
   y: (screenPos.y - offset.y) / zoom,
-}
+};
 
 // Stage → Screen: aplica zoom e pan
 stageToScreen(stagePos) = {
   x: stagePos.x * zoom + offset.x,
   y: stagePos.y * zoom + offset.y,
-}
+};
 ```
 
 ---
@@ -251,7 +255,7 @@ stageToScreen(stagePos) = {
 
 ```typescript
 interface StageProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 ```
 
@@ -271,29 +275,29 @@ function calculateStageSize(
   containerSize: Size,
   zoom: number,
   offset: Position,
-  margin: number = 200
+  margin: number = 200,
 ): Size {
   if (nodes.length === 0) {
-    return { width: containerSize.width, height: containerSize.height }
+    return { width: containerSize.width, height: containerSize.height };
   }
 
-  let maxX = 0
-  let maxY = 0
+  let maxX = 0;
+  let maxY = 0;
 
   for (const node of nodes) {
-    const nodeWidth = node.size?.width ?? 150
-    const nodeHeight = node.size?.height ?? 60
-    const right = node.position.x + nodeWidth
-    const bottom = node.position.y + nodeHeight
+    const nodeWidth = node.size?.width ?? 150;
+    const nodeHeight = node.size?.height ?? 60;
+    const right = node.position.x + nodeWidth;
+    const bottom = node.position.y + nodeHeight;
 
-    if (right > maxX) maxX = right
-    if (bottom > maxY) maxY = bottom
+    if (right > maxX) maxX = right;
+    if (bottom > maxY) maxY = bottom;
   }
 
   return {
     width: Math.max(maxX + margin, containerSize.width),
     height: Math.max(maxY + margin, containerSize.height),
-  }
+  };
 }
 ```
 
@@ -375,18 +379,18 @@ Para resolver, o wheel event listener precisa ser registrado com `passive: false
 ```typescript
 // Dentro do Stage.tsx, usando useEffect para registrar com passive: false
 useEffect(() => {
-  const el = stageRef.current
-  if (!el) return
+  const el = stageRef.current;
+  if (!el) return;
 
   const handler = (e: WheelEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     // delegar para handleWheel do usePanZoom
-    handleWheel(e as unknown as React.WheelEvent)
-  }
+    handleWheel(e as unknown as React.WheelEvent);
+  };
 
-  el.addEventListener('wheel', handler, { passive: false })
-  return () => el.removeEventListener('wheel', handler)
-}, [handleWheel])
+  el.addEventListener('wheel', handler, { passive: false });
+  return () => el.removeEventListener('wheel', handler);
+}, [handleWheel]);
 ```
 
 **Nota:** Usar `onWheel={handleWheel}` no JSX não funciona para `preventDefault()`
@@ -402,17 +406,17 @@ function clampPan(
   offset: Position,
   stageSize: Size,
   containerSize: Size,
-  zoom: number
+  zoom: number,
 ): Position {
-  const minX = -(stageSize.width * zoom - containerSize.width)
-  const minY = -(stageSize.height * zoom - containerSize.height)
-  const maxX = 0
-  const maxY = 0
+  const minX = -(stageSize.width * zoom - containerSize.width);
+  const minY = -(stageSize.height * zoom - containerSize.height);
+  const maxX = 0;
+  const maxY = 0;
 
   return {
     x: clamp(offset.x, minX, maxX),
     y: clamp(offset.y, minY, maxY),
-  }
+  };
 }
 ```
 

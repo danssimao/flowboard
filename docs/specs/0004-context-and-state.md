@@ -26,12 +26,12 @@ com as props externas via callbacks (`onNodesChange`, `onEdgesChange`).
 
 ```typescript
 interface FlowboardContextValue<TNode, TEdge> {
-  state: FlowboardState<TNode, TEdge>
-  theme: FlowboardTheme
-  dispatch: React.Dispatch<FlowboardAction<TNode, TEdge>>
-  minZoom: number
-  maxZoom: number
-  defaultNodeSize: Size
+  state: FlowboardState<TNode, TEdge>;
+  theme: FlowboardTheme;
+  dispatch: React.Dispatch<FlowboardAction<TNode, TEdge>>;
+  minZoom: number;
+  maxZoom: number;
+  defaultNodeSize: Size;
 }
 ```
 
@@ -39,11 +39,11 @@ interface FlowboardContextValue<TNode, TEdge> {
 
 ```typescript
 interface FlowboardProviderProps<TNode, TEdge> {
-  children: React.ReactNode
-  initialState: FlowboardState<TNode, TEdge>
-  theme: FlowboardTheme
-  minZoom: number
-  maxZoom: number
+  children: React.ReactNode;
+  initialState: FlowboardState<TNode, TEdge>;
+  theme: FlowboardTheme;
+  minZoom: number;
+  maxZoom: number;
 }
 ```
 
@@ -96,17 +96,17 @@ export function FlowboardProvider<TNode, TEdge>({
 ```typescript
 function flowboardReducer<TNode, TEdge>(
   state: FlowboardState<TNode, TEdge>,
-  action: FlowboardAction<TNode, TEdge>
+  action: FlowboardAction<TNode, TEdge>,
 ): FlowboardState<TNode, TEdge> {
   switch (action.type) {
     case 'SET_NODES':
-      return { ...state, nodes: action.payload }
+      return { ...state, nodes: action.payload };
 
     case 'SET_EDGES':
-      return { ...state, edges: action.payload }
+      return { ...state, edges: action.payload };
 
     case 'ADD_NODE':
-      return { ...state, nodes: [...state.nodes, action.payload] }
+      return { ...state, nodes: [...state.nodes, action.payload] };
 
     case 'MOVE_NODE':
       return {
@@ -114,62 +114,62 @@ function flowboardReducer<TNode, TEdge>(
         nodes: state.nodes.map((n) =>
           n.id === action.payload.id
             ? { ...n, position: action.payload.position }
-            : n
+            : n,
         ),
-      }
+      };
 
     case 'RESIZE_NODE':
       return {
         ...state,
         nodes: state.nodes.map((n) =>
-          n.id === action.payload.id
-            ? { ...n, size: action.payload.size }
-            : n
+          n.id === action.payload.id ? { ...n, size: action.payload.size } : n,
         ),
-      }
+      };
 
     case 'REMOVE_NODE': {
-      const nodeId = action.payload.id
+      const nodeId = action.payload.id;
       return {
         ...state,
         nodes: state.nodes.filter((n) => n.id !== nodeId),
         edges: state.edges.filter(
-          (e) =>
-            e.source?.nodeId !== nodeId &&
-            e.target?.nodeId !== nodeId
+          (e) => e.source?.nodeId !== nodeId && e.target?.nodeId !== nodeId,
         ),
         selectedNodeId:
           state.selectedNodeId === nodeId ? null : state.selectedNodeId,
-      }
+      };
     }
 
     case 'ADD_EDGE':
-      return { ...state, edges: [...state.edges, action.payload] }
+      return { ...state, edges: [...state.edges, action.payload] };
 
     case 'UPDATE_EDGE':
       return {
         ...state,
         edges: state.edges.map((e) => {
-          if (e.id !== action.payload.id) return e
+          if (e.id !== action.payload.id) return e;
           return {
             ...e,
-            ...(action.payload.source !== undefined && { source: action.payload.source }),
-            ...(action.payload.target !== undefined && { target: action.payload.target }),
-          }
+            ...(action.payload.source !== undefined && {
+              source: action.payload.source,
+            }),
+            ...(action.payload.target !== undefined && {
+              target: action.payload.target,
+            }),
+          };
         }),
-      }
+      };
 
     case 'DISCONNECT_EDGE':
       return {
         ...state,
         edges: state.edges.map((e) => {
-          if (e.id !== action.payload.edgeId) return e
+          if (e.id !== action.payload.edgeId) return e;
           if (action.payload.side === 'source') {
-            return { ...e, source: null }
+            return { ...e, source: null };
           }
-          return { ...e, target: null }
+          return { ...e, target: null };
         }),
-      }
+      };
 
     case 'REMOVE_EDGE':
       return {
@@ -179,36 +179,36 @@ function flowboardReducer<TNode, TEdge>(
           state.selectedEdgeId === action.payload.id
             ? null
             : state.selectedEdgeId,
-      }
+      };
 
     case 'SET_SELECTED_NODE':
       return {
         ...state,
         selectedNodeId: action.payload.id,
         selectedEdgeId: null,
-      }
+      };
 
     case 'SET_SELECTED_EDGE':
       return {
         ...state,
         selectedEdgeId: action.payload.id,
         selectedNodeId: null,
-      }
+      };
 
     case 'SET_ZOOM':
-      return { ...state, zoom: action.payload }
+      return { ...state, zoom: action.payload };
 
     case 'SET_PAN':
-      return { ...state, panOffset: action.payload }
+      return { ...state, panOffset: action.payload };
 
     case 'SET_SNAP_ENABLED':
-      return { ...state, snapEnabled: action.payload }
+      return { ...state, snapEnabled: action.payload };
 
     case 'SET_DRAG_STATE':
-      return { ...state, dragState: action.payload }
+      return { ...state, dragState: action.payload };
 
     default:
-      return state
+      return state;
   }
 }
 ```
@@ -226,12 +226,15 @@ function flowboardReducer<TNode, TEdge>(
 ## Hook useFlowboard
 
 ```typescript
-export function useFlowboard<TNode = Record<string, unknown>, TEdge = Record<string, unknown>>() {
-  const context = useContext(FlowboardContext)
+export function useFlowboard<
+  TNode = Record<string, unknown>,
+  TEdge = Record<string, unknown>,
+>() {
+  const context = useContext(FlowboardContext);
   if (!context) {
-    throw new Error('useFlowboard must be used within a FlowboardProvider')
+    throw new Error('useFlowboard must be used within a FlowboardProvider');
   }
-  return context as FlowboardContextValue<TNode, TEdge>
+  return context as FlowboardContextValue<TNode, TEdge>;
 }
 ```
 
@@ -244,48 +247,52 @@ ações (dispatches) prontas:
 
 ```typescript
 export function useFlowboardActions<TNode, TEdge>() {
-  const { dispatch, state } = useFlowboard<TNode, TEdge>()
+  const { dispatch, state } = useFlowboard<TNode, TEdge>();
 
-  return useMemo(() => ({
-    addNode: (node: Node<TNode>) =>
-      dispatch({ type: 'ADD_NODE', payload: node }),
+  return useMemo(
+    () => ({
+      addNode: (node: Node<TNode>) =>
+        dispatch({ type: 'ADD_NODE', payload: node }),
 
-    removeNode: (id: string) =>
-      dispatch({ type: 'REMOVE_NODE', payload: { id } }),
+      removeNode: (id: string) =>
+        dispatch({ type: 'REMOVE_NODE', payload: { id } }),
 
-    moveNode: (id: string, position: Position) =>
-      dispatch({ type: 'MOVE_NODE', payload: { id, position } }),
+      moveNode: (id: string, position: Position) =>
+        dispatch({ type: 'MOVE_NODE', payload: { id, position } }),
 
-    addEdge: (edge: Edge<TEdge>) =>
-      dispatch({ type: 'ADD_EDGE', payload: edge }),
+      addEdge: (edge: Edge<TEdge>) =>
+        dispatch({ type: 'ADD_EDGE', payload: edge }),
 
-    removeEdge: (id: string) =>
-      dispatch({ type: 'REMOVE_EDGE', payload: { id } }),
+      removeEdge: (id: string) =>
+        dispatch({ type: 'REMOVE_EDGE', payload: { id } }),
 
-    updateEdge: (id: string, update: { source?: EdgeEndpoint | null; target?: EdgeEndpoint | null }) =>
-      dispatch({ type: 'UPDATE_EDGE', payload: { id, ...update } }),
+      updateEdge: (
+        id: string,
+        update: { source?: EdgeEndpoint | null; target?: EdgeEndpoint | null },
+      ) => dispatch({ type: 'UPDATE_EDGE', payload: { id, ...update } }),
 
-    disconnectEdge: (edgeId: string, side: 'source' | 'target') =>
-      dispatch({ type: 'DISCONNECT_EDGE', payload: { edgeId, side } }),
+      disconnectEdge: (edgeId: string, side: 'source' | 'target') =>
+        dispatch({ type: 'DISCONNECT_EDGE', payload: { edgeId, side } }),
 
-    selectNode: (id: string | null) =>
-      dispatch({ type: 'SET_SELECTED_NODE', payload: { id } }),
+      selectNode: (id: string | null) =>
+        dispatch({ type: 'SET_SELECTED_NODE', payload: { id } }),
 
-    selectEdge: (id: string | null) =>
-      dispatch({ type: 'SET_SELECTED_EDGE', payload: { id } }),
+      selectEdge: (id: string | null) =>
+        dispatch({ type: 'SET_SELECTED_EDGE', payload: { id } }),
 
-    setZoom: (zoom: number) =>
-      dispatch({ type: 'SET_ZOOM', payload: zoom }),
+      setZoom: (zoom: number) => dispatch({ type: 'SET_ZOOM', payload: zoom }),
 
-    setPan: (offset: Position) =>
-      dispatch({ type: 'SET_PAN', payload: offset }),
+      setPan: (offset: Position) =>
+        dispatch({ type: 'SET_PAN', payload: offset }),
 
-    setSnapEnabled: (enabled: boolean) =>
-      dispatch({ type: 'SET_SNAP_ENABLED', payload: enabled }),
+      setSnapEnabled: (enabled: boolean) =>
+        dispatch({ type: 'SET_SNAP_ENABLED', payload: enabled }),
 
-    setDragState: (dragState: DragState | null) =>
-      dispatch({ type: 'SET_DRAG_STATE', payload: dragState }),
-  }), [dispatch])
+      setDragState: (dragState: DragState | null) =>
+        dispatch({ type: 'SET_DRAG_STATE', payload: dragState }),
+    }),
+    [dispatch],
+  );
 }
 ```
 
@@ -301,25 +308,25 @@ export function useFlowboardSync<TNode, TEdge>(
   nodes: Node<TNode>[],
   edges: Edge<TEdge>[],
   onNodesChange: (nodes: Node<TNode>[]) => void,
-  onEdgesChange: (edges: Edge<TEdge>[]) => void
+  onEdgesChange: (edges: Edge<TEdge>[]) => void,
 ) {
-  const { state } = useFlowboard<TNode, TEdge>()
-  const prevNodesRef = useRef(state.nodes)
-  const prevEdgesRef = useRef(state.edges)
+  const { state } = useFlowboard<TNode, TEdge>();
+  const prevNodesRef = useRef(state.nodes);
+  const prevEdgesRef = useRef(state.edges);
 
   useEffect(() => {
     if (prevNodesRef.current !== state.nodes) {
-      prevNodesRef.current = state.nodes
-      onNodesChange(state.nodes)
+      prevNodesRef.current = state.nodes;
+      onNodesChange(state.nodes);
     }
-  }, [state.nodes, onNodesChange])
+  }, [state.nodes, onNodesChange]);
 
   useEffect(() => {
     if (prevEdgesRef.current !== state.edges) {
-      prevEdgesRef.current = state.edges
-      onEdgesChange(state.edges)
+      prevEdgesRef.current = state.edges;
+      onEdgesChange(state.edges);
     }
-  }, [state.edges, onEdgesChange])
+  }, [state.edges, onEdgesChange]);
 }
 ```
 
